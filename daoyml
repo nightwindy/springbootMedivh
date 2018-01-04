@@ -1,0 +1,30 @@
+gtr:
+  image: daocloud.io/windy/xxx:xxx-dev-finance.2018010403
+  command: /bin/bash /home/admin/start.sh
+  restart: 'no'
+  network_mode: host
+  ports:
+  - 20891:20891
+  - 7006:7006
+  expose:
+  - '8006'
+  environment:
+  - PROJECT_NAME=gtr
+  - ANTX=antx
+  - JETTY_PORT=8006
+  - SPRING_DUBBO_PROTOCOL_PORT=20891
+  - ENV=dev
+  - TEAM_NAME=finance
+  - SPRING_PROFILES_ACTIVE=dev
+  - JAVA_OPTIONS=-server -Xms1g -Xmx1g -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m
+    -Xmn512M -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSMaxAbortablePrecleanTime=5000
+    -XX:+CMSClassUnloadingEnabled -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=80
+    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/publish/app/logs/gtr/dev/java.hprof
+    -verbose:gc -Xloggc:/home/publish/app/logs/gtr/dev/gc.log -XX:+PrintGCDetails
+    -XX:+PrintGCDateStamps -Djava.awt.headless=true -Dsun.net.client.defaultConnectTimeout=10000
+    -Dsun.net.client.defaultReadTimeout=30000 -XX:+DisableExplicitGC -Xdebug -XX:PermSize=96m
+    -XX:MaxPermSize=384m -agentlib:jdwp=transport=dt_socket,address=7006,server=y,suspend=n
+  - VIRTUAL_HOST=xxx-dev-finance.windy.net
+  container_name: dev-xxx-finance
+  volumes_from:
+  - nginx-proxy

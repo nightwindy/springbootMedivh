@@ -1,0 +1,38 @@
+#比较常用的基础镜像有ubuntu，centos。这里使用了一个极小的基础镜像alpine
+#FROM centos:7
+FROM nimmis/java-centos:oracle-8-jdk
+#FROM webdizz/centos-java8
+
+
+#MAINTAINER指令用于将镜像制作者相关的信息写入到镜像中
+#您可以将您的信息填入name以及email
+MAINTAINER windy <night_windy@163.com>
+ENV REFRESHED_AT 2018-01-04
+#安装java8
+
+RUN yum install -y sudo; yum install -y openssh openssh-server openssh-clients openssl-libs;yum install -y which
+
+
+ENV JAVA_HOME /usr
+
+#下载安装maven  maven 一些环境可以初始化手动添加
+ENV MAVEN_VERSION=3.3.9 \
+    MAVEN_HOME=/opt/mvn \
+    TIME_ZONE=Asia/Shanghai
+
+RUN useradd admin; echo 123456 | passwd --stdin admin; usermod -aG wheel admin && \
+    yum install -y tzdata && \
+    yum install -y epel-release; yum repolist; yum install -y sshpass && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone
+    
+ENV M2_HOME=${MAVEN_HOME}
+ENV M2=$M2_HOME/bin
+ENV PATH $PATH:$M2_HOME:$M2:$JAVA_HOME
+
+RUN yum clean all
+ADD start_centos.sh /home/admin
+ADD . /home/admin/app/src/app
+RUN chown -R admin:admin /home/admin
+USER admin
+
