@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.windy.medivh.dao.entity.FpStatisticsEntity" table="fp_statistics" schema="fp_asset">
+        <id name="statisticsId" column="statistics_id"/>
+        <property name="date" column="date"/>
+        <property name="capitalName" column="capital_name"/>
+        <property name="productType" column="product_type"/>
+        <property name="currentApplyAmountSum" column="current_apply_amount_sum"/>
+        <property name="currentLoanAmountSum" column="current_loan_amount_sum"/>
+        <property name="depositAmountSum" column="deposit_amount_sum"/>
+        <property name="carAmountSum" column="car_amount_sum"/>
+        <property name="currentTakeoutAmountSum" column="current_takeout_amount_sum"/>
+        <property name="currentReturnAmountSum" column="current_return_amount_sum"/>
+        <property name="accumulateLoanAmountSum" column="accumulate_loan_amount_sum"/>
+        <property name="accumulateReturnPrincipalSum" column="accumulate_return_principal_sum"/>
+        <property name="accumulateReturnInterestSum" column="accumulate_return_interest_sum"/>
+        <property name="capitalNo" column="capital_no"/>
+    </class>
+</hibernate-mapping>
