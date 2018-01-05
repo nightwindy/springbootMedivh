@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windy.medivh.dal.mapper.FpOverdueSolveMapper">
+    <resultMap id="BaseResultMap" type="com.windy.medivh.dal.model.FpOverdueSolveDO">
+        <id column="overdue_solve_id" jdbcType="BIGINT" property="overdueSolveId" />
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+        <result column="collection_no" jdbcType="VARCHAR" property="collectionNo" />
+        <result column="debt_id" jdbcType="VARCHAR" property="debtId" />
+        <result column="executor" jdbcType="VARCHAR" property="executor" />
+        <result column="execute_id" jdbcType="VARCHAR" property="executeId" />
+        <result column="execute_date" jdbcType="TIMESTAMP" property="executeDate" />
+        <result column="car_position" jdbcType="INTEGER" property="carPosition" />
+        <result column="debt_principal" jdbcType="DECIMAL" property="debtPrincipal" />
+        <result column="debt_interest" jdbcType="DECIMAL" property="debtInterest" />
+        <result column="debt_principal_interest" jdbcType="DECIMAL" property="debtPrincipalInterest" />
+        <result column="solve_scheme" jdbcType="INTEGER" property="solveScheme" />
+        <result column="execute_desc" jdbcType="VARCHAR" property="executeDesc" />
+        <result column="procedure_position" jdbcType="INTEGER" property="procedurePosition" />
+        <result column="payment_interest" jdbcType="DECIMAL" property="paymentInterest" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="predict_repayment_date" jdbcType="TIMESTAMP" property="predictRepaymentDate" />
+        <result column="car_status" jdbcType="INTEGER" property="carStatus" />
+        <result column="procedure_status" jdbcType="INTEGER" property="procedureStatus" />
+        <result column="car_status_desc" jdbcType="VARCHAR" property="carStatusDesc" />
+        <result column="procedure_status_desc" jdbcType="VARCHAR" property="procedureStatusDesc" />
+        <result column="approve_status" jdbcType="INTEGER" property="approveStatus" />
+        <result column="approve_comment" jdbcType="VARCHAR" property="approveComment" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="create_source" jdbcType="INTEGER" property="createSource" />
+        <result column="repayment_promise_letter_list" jdbcType="VARCHAR" property="repaymentPromiseLetterList" />
+        <result column="other_file_list" jdbcType="VARCHAR" property="otherFileList" />
+    </resultMap>
+
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                <trim prefix="(" prefixOverrides="and" suffix=")">
+                    <foreach collection="criteria.criteria" item="criterion">
+                        <choose>
+                            <when test="criterion.noValue">
+                                and ${criterion.condition}
+                            </when>
+                            <when test="criterion.singleValue">
+                                and ${criterion.condition} #{criterion.value}
+                            </when>
+                            <when test="criterion.betweenValue">
+                                and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                            </when>
+                            <when test="criterion.listValue">
+                                and ${criterion.condition}
+                            <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                #{listItem}
+                            </foreach>
+                            </when>
+                        </choose>
+                    </foreach>
+                </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Query_Where_Clause">
+        <where>
+            <foreach collection="query.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+        overdue_solve_id,gmt_create,gmt_modified,collection_no,debt_id,executor,execute_id,execute_date,car_position,debt_principal,debt_interest,debt_principal_interest,solve_scheme,execute_desc,procedure_position,payment_interest,remark,predict_repayment_date,car_status,procedure_status,car_status_desc,procedure_status_desc,approve_status,approve_comment,status,create_source,repayment_promise_letter_list,other_file_list
+    </sql>
+
+    <select id="selectByQuery" parameterType="com.windy.medivh.dal.query.FpOverdueSolveQuery" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+            from fp_overdue_solve
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <include refid="MysqlDialectSuffix" />
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from fp_overdue_solve where overdue_solve_id = #{overdueSolveId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from fp_overdue_solve where overdue_solve_id = #{overdueSolveId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByQuery" parameterType="com.windy.medivh.dal.query.FpOverdueSolveQuery">
+        delete from fp_overdue_solve
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.windy.medivh.dal.model.FpOverdueSolveDO">
+        <selectKey keyProperty="overdueSolveId" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into fp_overdue_solve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            gmt_create,gmt_modified,
+            <if test="collectionNo != null">
+                collection_no,
+            </if>
+            <if test="debtId != null">
+                debt_id,
+            </if>
+            <if test="executor != null">
+                executor,
+            </if>
+            <if test="executeId != null">
+                execute_id,
+            </if>
+            <if test="executeDate != null">
+                execute_date,
+            </if>
+            <if test="carPosition != null">
+                car_position,
+            </if>
+            <if test="debtPrincipal != null">
+                debt_principal,
+            </if>
+            <if test="debtInterest != null">
+                debt_interest,
+            </if>
+            <if test="debtPrincipalInterest != null">
+                debt_principal_interest,
+            </if>
+            <if test="solveScheme != null">
+                solve_scheme,
+            </if>
+            <if test="executeDesc != null">
+                execute_desc,
+            </if>
+            <if test="procedurePosition != null">
+                procedure_position,
+            </if>
+            <if test="paymentInterest != null">
+                payment_interest,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="predictRepaymentDate != null">
+                predict_repayment_date,
+            </if>
+            <if test="carStatus != null">
+                car_status,
+            </if>
+            <if test="procedureStatus != null">
+                procedure_status,
+            </if>
+            <if test="carStatusDesc != null">
+                car_status_desc,
+            </if>
+            <if test="procedureStatusDesc != null">
+                procedure_status_desc,
+            </if>
+            <if test="approveStatus != null">
+                approve_status,
+            </if>
+            <if test="approveComment != null">
+                approve_comment,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createSource != null">
+                create_source,
+            </if>
+            <if test="repaymentPromiseLetterList != null">
+                repayment_promise_letter_list,
+            </if>
+            <if test="otherFileList != null">
+                other_file_list,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            now(),now(),
+            <if test="collectionNo != null">
+                #{collectionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="debtId != null">
+                #{debtId,jdbcType=VARCHAR},
+            </if>
+            <if test="executor != null">
+                #{executor,jdbcType=VARCHAR},
+            </if>
+            <if test="executeId != null">
+                #{executeId,jdbcType=VARCHAR},
+            </if>
+            <if test="executeDate != null">
+                #{executeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carPosition != null">
+                #{carPosition,jdbcType=INTEGER},
+            </if>
+            <if test="debtPrincipal != null">
+                #{debtPrincipal,jdbcType=DECIMAL},
+            </if>
+            <if test="debtInterest != null">
+                #{debtInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="debtPrincipalInterest != null">
+                #{debtPrincipalInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="solveScheme != null">
+                #{solveScheme,jdbcType=INTEGER},
+            </if>
+            <if test="executeDesc != null">
+                #{executeDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="procedurePosition != null">
+                #{procedurePosition,jdbcType=INTEGER},
+            </if>
+            <if test="paymentInterest != null">
+                #{paymentInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="predictRepaymentDate != null">
+                #{predictRepaymentDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carStatus != null">
+                #{carStatus,jdbcType=INTEGER},
+            </if>
+            <if test="procedureStatus != null">
+                #{procedureStatus,jdbcType=INTEGER},
+            </if>
+            <if test="carStatusDesc != null">
+                #{carStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="procedureStatusDesc != null">
+                #{procedureStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="approveStatus != null">
+                #{approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="approveComment != null">
+                #{approveComment,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createSource != null">
+                #{createSource,jdbcType=INTEGER},
+            </if>
+            <if test="repaymentPromiseLetterList != null">
+                #{repaymentPromiseLetterList,jdbcType=VARCHAR},
+            </if>
+            <if test="otherFileList != null">
+                #{otherFileList,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByQuery" parameterType="com.windy.medivh.dal.query.FpOverdueSolveQuery" resultType="java.lang.Integer">
+        select count(*) from fp_overdue_solve
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByQuerySelective" parameterType="map">
+        update fp_overdue_solve
+        <set>
+            gmt_modified=now(),
+            <if test="record.collectionNo != null">
+                collection_no = #{record.collectionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.debtId != null">
+                debt_id = #{record.debtId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.executor != null">
+                executor = #{record.executor,jdbcType=VARCHAR},
+            </if>
+            <if test="record.executeId != null">
+                execute_id = #{record.executeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.executeDate != null">
+                execute_date = #{record.executeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.carPosition != null">
+                car_position = #{record.carPosition,jdbcType=INTEGER},
+            </if>
+            <if test="record.debtPrincipal != null">
+                debt_principal = #{record.debtPrincipal,jdbcType=DECIMAL},
+            </if>
+            <if test="record.debtInterest != null">
+                debt_interest = #{record.debtInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="record.debtPrincipalInterest != null">
+                debt_principal_interest = #{record.debtPrincipalInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="record.solveScheme != null">
+                solve_scheme = #{record.solveScheme,jdbcType=INTEGER},
+            </if>
+            <if test="record.executeDesc != null">
+                execute_desc = #{record.executeDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.procedurePosition != null">
+                procedure_position = #{record.procedurePosition,jdbcType=INTEGER},
+            </if>
+            <if test="record.paymentInterest != null">
+                payment_interest = #{record.paymentInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="record.remark != null">
+                remark = #{record.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.predictRepaymentDate != null">
+                predict_repayment_date = #{record.predictRepaymentDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.carStatus != null">
+                car_status = #{record.carStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.procedureStatus != null">
+                procedure_status = #{record.procedureStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.carStatusDesc != null">
+                car_status_desc = #{record.carStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.procedureStatusDesc != null">
+                procedure_status_desc = #{record.procedureStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approveStatus != null">
+                approve_status = #{record.approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.approveComment != null">
+                approve_comment = #{record.approveComment,jdbcType=VARCHAR},
+            </if>
+            <if test="record.status != null">
+                status = #{record.status,jdbcType=INTEGER},
+            </if>
+            <if test="record.createSource != null">
+                create_source = #{record.createSource,jdbcType=INTEGER},
+            </if>
+            <if test="record.repaymentPromiseLetterList != null">
+                repayment_promise_letter_list = #{record.repaymentPromiseLetterList,jdbcType=VARCHAR},
+            </if>
+            <if test="record.otherFileList != null">
+                other_file_list = #{record.otherFileList,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Query_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByQuery" parameterType="map">
+        update fp_overdue_solve set
+        collection_no = #{record.collectionNo,jdbcType=VARCHAR},
+        debt_id = #{record.debtId,jdbcType=VARCHAR},
+        executor = #{record.executor,jdbcType=VARCHAR},
+        execute_id = #{record.executeId,jdbcType=VARCHAR},
+        execute_date = #{record.executeDate,jdbcType=TIMESTAMP},
+        car_position = #{record.carPosition,jdbcType=INTEGER},
+        debt_principal = #{record.debtPrincipal,jdbcType=DECIMAL},
+        debt_interest = #{record.debtInterest,jdbcType=DECIMAL},
+        debt_principal_interest = #{record.debtPrincipalInterest,jdbcType=DECIMAL},
+        solve_scheme = #{record.solveScheme,jdbcType=INTEGER},
+        execute_desc = #{record.executeDesc,jdbcType=VARCHAR},
+        procedure_position = #{record.procedurePosition,jdbcType=INTEGER},
+        payment_interest = #{record.paymentInterest,jdbcType=DECIMAL},
+        remark = #{record.remark,jdbcType=VARCHAR},
+        predict_repayment_date = #{record.predictRepaymentDate,jdbcType=TIMESTAMP},
+        car_status = #{record.carStatus,jdbcType=INTEGER},
+        procedure_status = #{record.procedureStatus,jdbcType=INTEGER},
+        car_status_desc = #{record.carStatusDesc,jdbcType=VARCHAR},
+        procedure_status_desc = #{record.procedureStatusDesc,jdbcType=VARCHAR},
+        approve_status = #{record.approveStatus,jdbcType=INTEGER},
+        approve_comment = #{record.approveComment,jdbcType=VARCHAR},
+        status = #{record.status,jdbcType=INTEGER},
+        create_source = #{record.createSource,jdbcType=INTEGER},
+        repayment_promise_letter_list = #{record.repaymentPromiseLetterList,jdbcType=VARCHAR},
+        other_file_list = #{record.otherFileList,jdbcType=VARCHAR},
+        gmt_modified = now()
+        <if test="_parameter != null">
+            <include refid="Update_By_Query_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.windy.medivh.dal.model.FpOverdueSolveDO">
+        update fp_overdue_solve
+        <set>
+            gmt_modified=now(),
+            <if test="collectionNo != null">
+                collection_no = #{collectionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="debtId != null">
+                debt_id = #{debtId,jdbcType=VARCHAR},
+            </if>
+            <if test="executor != null">
+                executor = #{executor,jdbcType=VARCHAR},
+            </if>
+            <if test="executeId != null">
+                execute_id = #{executeId,jdbcType=VARCHAR},
+            </if>
+            <if test="executeDate != null">
+                execute_date = #{executeDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carPosition != null">
+                car_position = #{carPosition,jdbcType=INTEGER},
+            </if>
+            <if test="debtPrincipal != null">
+                debt_principal = #{debtPrincipal,jdbcType=DECIMAL},
+            </if>
+            <if test="debtInterest != null">
+                debt_interest = #{debtInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="debtPrincipalInterest != null">
+                debt_principal_interest = #{debtPrincipalInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="solveScheme != null">
+                solve_scheme = #{solveScheme,jdbcType=INTEGER},
+            </if>
+            <if test="executeDesc != null">
+                execute_desc = #{executeDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="procedurePosition != null">
+                procedure_position = #{procedurePosition,jdbcType=INTEGER},
+            </if>
+            <if test="paymentInterest != null">
+                payment_interest = #{paymentInterest,jdbcType=DECIMAL},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="predictRepaymentDate != null">
+                predict_repayment_date = #{predictRepaymentDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carStatus != null">
+                car_status = #{carStatus,jdbcType=INTEGER},
+            </if>
+            <if test="procedureStatus != null">
+                procedure_status = #{procedureStatus,jdbcType=INTEGER},
+            </if>
+            <if test="carStatusDesc != null">
+                car_status_desc = #{carStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="procedureStatusDesc != null">
+                procedure_status_desc = #{procedureStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="approveStatus != null">
+                approve_status = #{approveStatus,jdbcType=INTEGER},
+            </if>
+            <if test="approveComment != null">
+                approve_comment = #{approveComment,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createSource != null">
+                create_source = #{createSource,jdbcType=INTEGER},
+            </if>
+            <if test="repaymentPromiseLetterList != null">
+                repayment_promise_letter_list = #{repaymentPromiseLetterList,jdbcType=VARCHAR},
+            </if>
+            <if test="otherFileList != null">
+                other_file_list = #{otherFileList,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where overdue_solve_id = #{overdueSolveId,jdbcType=BIGINT}
+    </update>
+
+    <sql id="MysqlDialectSuffix">
+        <if test="pageOffset &gt;= 0 and pageSize &gt; 0">
+            <![CDATA[ LIMIT #{pageOffset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER} ]]>
+        </if>
+    </sql>
+
+</mapper>
