@@ -1,0 +1,70 @@
+server:
+  port: 8001
+
+
+valeera:
+  topic: valeera_confirm
+  producer: valeera_pid
+  consumer: valeera_cid
+
+fordring:
+  topic: fordring_topic_confirm
+  consumer: fordring_cid
+
+spring:
+  zipkin:
+    base-url: http://127.0.0.1:9411
+  sleuth:
+    sampler:
+      percentage: 10
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/springbootdb?characterEncoding=utf8&useSSL=true&zeroDateTimeBehavior=convertToNull
+    type: org.apache.tomcat.jdbc.pool.DataSource
+    password: root
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
+    tomcat:
+      max-active: 200
+      max-idle: 100
+      max-wait: 0
+      min-idle: 20
+  profiles:
+    active: dev
+  dubbo:
+    provider:
+      version: 1.0_qi
+    consumer:
+      version: 1.0_qi
+    valeeraconsumer:
+      version: 1.0_valeera
+    application:
+      name: medivh
+    registry:
+      address: zookeeper://127.0.0.1:2181?backup=127.0.0.2:2181
+    protocol:
+      name: dubbo
+      port: 20883
+    timeout: 300000
+
+  redis:
+    database: 0
+    host: windy.com
+    port: 6399
+    password: gunnimabi
+    pool:
+      max-idle: 16
+      min-idle: 8
+      max-active: 256
+      max-wait: 512
+    timeout: 2000
+logging:
+  config: classpath:medivh-logback.xml
+pz:
+  pza: xx
+  pzb:
+    pzc: xxx
+    pzd: xxxx
+
+
+
+

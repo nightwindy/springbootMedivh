@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: medivh
+  cloud:
+    config:
+      discovery:
+        profile: pre
+        name: medivh
+        enabled: true
+        serviceId: lorinser
+      enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.2:8761/eureka/
+    enabled: true
