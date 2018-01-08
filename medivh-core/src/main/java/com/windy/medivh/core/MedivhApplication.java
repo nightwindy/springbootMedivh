@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author songshuang
+ * @author windy
  * @Date 2017-11-03
  */
 @SpringBootApplication
