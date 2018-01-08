@@ -1,14 +1,11 @@
 package com.windy.medivh.common.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by songshuang on 17/3/18.
- */
 public class ImgUrlUtil {
     public static final String SPLIT = "#*#";
     public static final String CLI_SPLIT = ";";
