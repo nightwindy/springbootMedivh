@@ -1,6 +1,6 @@
 package ${managerPackage};
 
-import PageResult;
+import com.windy.medivh.common.query.PageResult;
 import ${doPackage}.${className}${doSuffix};
 import ${queryPackage}.${className}${queryPrefix};
 
