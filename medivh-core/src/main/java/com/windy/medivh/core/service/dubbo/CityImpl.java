@@ -25,6 +25,6 @@ public class CityImpl implements CityService {
 
     @Override
     public BizResult<String> insertCity(CityRequest cityRequest) {
-        return null;
+       return cityAO.insertCity(cityRequest);
     }
 }
