@@ -6,9 +6,14 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.curator.framework.api.CuratorListener;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
@@ -20,7 +25,7 @@ import java.util.concurrent.Executor;
 public class ZkUtils {
 
 
-    private CuratorFramework client;
+    private static CuratorFramework client;
 
     /**
      *
@@ -32,11 +37,11 @@ public class ZkUtils {
 
     public static final String MEDIVH_NAMESPACE = "medivh-app";
 
-    @Value("${zkServerList}")
-    private String connectString;//ZK服务器地址
+    /*@Value("${zkServerList}")*/
+    private static String connectString="127.0.0.1:2181";//ZK服务器地址
 
 
-    public CuratorFramework getClient() {
+    public  static CuratorFramework getClient() {
         if (client == null) {
             //重试连接策略
             //重试3次，每次间隔时间指数增长(有具体增长公式)重试次数的增加，计算出的sleep时间也会越来越大
@@ -100,7 +105,7 @@ public class ZkUtils {
     }
     public static void delete(CuratorFramework client, String path) throws Exception {
         // delete the given node
-        client.delete().forPath(path);
+        client.delete().deletingChildrenIfNeeded().forPath(path);
     }
     public static void guaranteedDelete(CuratorFramework client, String path) throws Exception {
         // delete the given node and guarantee that it completes
@@ -120,6 +125,65 @@ public class ZkUtils {
         return client.getChildren().usingWatcher(watcher).forPath(path);
     }
 
+    public static Stat checkExists(CuratorFramework client, String path) throws Exception {
+       return client.checkExists().forPath(path);//Stat就是对zonde所有属性的一个映射， stat=null表示节点不存在！ 
+    }
+
+    public static List<String> checkAllChildExists(CuratorFramework client, String path) throws Exception {
+       return client.getChildren().forPath(path);//获取path下的子节点 不包含其子节点下的子节点
+    }
+//监听path路径下的儿子节点 不包含孙子节点
+    public static PathChildrenCache pathCache(CuratorFramework client, String path,Boolean bol) throws Exception {
+        PathChildrenCache cache = new PathChildrenCache(client, path, bol);
+        cache.getListenable().addListener(new PathChildrenCacheListener() {
+            @Override
+            public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+                PathChildrenCacheEvent.Type eventType = event.getType();
+                switch (eventType) {
+                    case CONNECTION_RECONNECTED:
+                        cache.rebuild();
+                        break;
+                    case CONNECTION_SUSPENDED:
+                    case CONNECTION_LOST:
+                        System.out.println("Connection error,waiting...");
+                        break;
+                    default:
+                        System.out.println("PathChildrenCache changed : {path:" + event.getData().getPath() + " data:" +
+                                new String(event.getData().getData()) + "}");
+                }
+            }
+        });
+        return cache;
+    }
+    public static void main(String[] args) {
+
+        CuratorFramework client = getClient();
+        try {
+            //ZkUtils.create(client,"/medivh/music","Jay".getBytes());
+            Stat stat = ZkUtils.checkExists(client, "/medivh/music2");
+
+            List<String> strings = ZkUtils.checkAllChildExists(client, "/medivh");
+
+            PathChildrenCache cache =ZkUtils.pathCache(client, "/medivh", true);
+            /*
+            NORMAL：正常初始化。
+            BUILD_INITIAL_CACHE：在调用start()之前会调用rebuild()。
+            POST_INITIALIZED_EVENT： 当Cache初始化数据后发送一个PathChildrenCacheEvent.Type#INITIALIZED事件
+             */
+            cache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
+            List<ChildData> datas = cache.getCurrentData();
+            for (ChildData data : datas) {
+                System.out.println("pathcache:{" + data.getPath() + ":" + new String(data.getData())+"}");
+            }
+
+            ZkUtils.create(client,"/medivh/music4","我的哥".getBytes());
+
+
+            System.out.printf("xx");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
