@@ -13,6 +13,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
@@ -224,8 +225,14 @@ demo
 普通的后台应用通常都是使用时间戳方式来生成流水号，
 但是在用户量非常大的情况下，可能会出现并发问题。
              */
-
+//公平锁
             final InterProcessMutex lock = new InterProcessMutex(client, "/super");
+
+//非公平锁
+            InterProcessMutex unFairLock = new InterProcessMutex(client,"/mylock", new NoFairLockDriver());
+
+//读写锁
+            InterProcessReadWriteLock readWriteLock = new InterProcessReadWriteLock(client, "/read-write-lock");
             for(int i = 0; i < 10; i++){
                 new Thread(new Runnable() {
                     @Override
