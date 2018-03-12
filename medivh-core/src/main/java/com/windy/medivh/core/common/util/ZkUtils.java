@@ -6,16 +6,22 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.curator.framework.api.CuratorListener;
+import org.apache.curator.framework.recipes.atomic.AtomicValue;
+import org.apache.curator.framework.recipes.atomic.DistributedAtomicInteger;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -155,28 +161,96 @@ public class ZkUtils {
         });
         return cache;
     }
+
+
+    static int count = 10;
+    public static void genarNo(){
+        try {
+           /* count--;
+            System.out.println(count);
+*/
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss|SSS");
+
+            String orderNo = sdf.format(new Date());
+            //分布式计数器
+            DistributedAtomicInteger counter=new DistributedAtomicInteger(client,"/super",new RetryNTimes(3,100));
+            //初始化
+            //counter.forceSet(0);
+            AtomicValue<Integer> value = counter.increment();
+            System.out.println("原值为"+value.preValue());
+            System.out.println("更改后的值为"+value.postValue());
+            System.out.println("状态"+value.succeeded());
+            System.err.println("生成的订单号是：" + orderNo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
     public static void main(String[] args) {
 
         CuratorFramework client = getClient();
         try {
-            //ZkUtils.create(client,"/medivh/music","Jay".getBytes());
+            /*//ZkUtils.create(client,"/medivh/music","Jay".getBytes());
             Stat stat = ZkUtils.checkExists(client, "/medivh/music2");
 
             List<String> strings = ZkUtils.checkAllChildExists(client, "/medivh");
 
             PathChildrenCache cache =ZkUtils.pathCache(client, "/medivh", true);
-            /*
+            *//*
             NORMAL：正常初始化。
             BUILD_INITIAL_CACHE：在调用start()之前会调用rebuild()。
             POST_INITIALIZED_EVENT： 当Cache初始化数据后发送一个PathChildrenCacheEvent.Type#INITIALIZED事件
-             */
+             *//*
             cache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
             List<ChildData> datas = cache.getCurrentData();
             for (ChildData data : datas) {
                 System.out.println("pathcache:{" + data.getPath() + ":" + new String(data.getData())+"}");
             }
 
-            ZkUtils.create(client,"/medivh/music4","我的哥".getBytes());
+            ZkUtils.create(client,"/medivh/music4","我的哥".getBytes());*/
+
+
+
+
+
+
+            /*
+            zk锁
+        用InterProcessMutex做分布式锁，通过zookeeper节点不能重复的原理来让分布式环境的服务排队处理同一个数据
+demo
+ 以一个“流水号生成”的场景为例，
+普通的后台应用通常都是使用时间戳方式来生成流水号，
+但是在用户量非常大的情况下，可能会出现并发问题。
+             */
+
+            final InterProcessMutex lock = new InterProcessMutex(client, "/super");
+            for(int i = 0; i < 10; i++){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //countdown.await();
+                            //加锁
+                            lock.acquire();
+                            //-------------业务处理开始
+                            genarNo();
+                            //-------------业务处理结束
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                //释放
+                                lock.release();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                },"t" + i).start();
+            }
+
 
 
             System.out.printf("xx");
