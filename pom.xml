@@ -116,7 +116,6 @@
 				<artifactId>commons-io</artifactId>
 				<version>2.5</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity</artifactId>
@@ -191,7 +190,26 @@
 				<artifactId>qiniu-java-sdk</artifactId>
 				<version>7.2.6</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.windy</groupId>
+				<artifactId>guldan-spring-boot-starter</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>3.4.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-framework</artifactId>
+				<version>2.11.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-recipes</artifactId>
+				<version>2.11.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
